@@ -14,7 +14,25 @@ export const addOns: AddOn[] = [
 ];
 
 export const recentOrders: OrderSummary[] = [
-    { id: 'ORD-01JY9QTX', customerName: 'Nadia Putri', pickupAt: 'Hari ini, 15.00', total: 202000, status: 'pending' },
-    { id: 'ORD-01JY9QSY', customerName: 'Rizky Maulana', pickupAt: 'Besok, 10.00', total: 220000, status: 'completed' },
-    { id: 'ORD-01JY9QRZ', customerName: 'Aulia Rahman', pickupAt: '25 Jun, 13.30', total: 167000, status: 'pending' },
+    {
+        id: 'ORD-01JY9QTX',
+        customerName: 'Nadia Putri',
+        pickupAt: 'Hari ini, 15.00',
+        total: 202000,
+        status: 'pending',
+    },
+    {
+        id: 'ORD-01JY9QSY',
+        customerName: 'Rizky Maulana',
+        pickupAt: 'Besok, 10.00',
+        total: 220000,
+        status: 'completed',
+    },
+    {
+        id: 'ORD-01JY9QRZ',
+        customerName: 'Aulia Rahman',
+        pickupAt: '25 Jun, 13.30',
+        total: 167000,
+        status: 'pending',
+    },
 ];

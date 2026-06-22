@@ -4,4 +4,9 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum WhatsappStatus: string { case Pending = 'pending'; case Sent = 'sent'; case Failed = 'failed'; }
+enum WhatsappStatus: string
+{
+    case Pending = 'pending';
+    case Sent = 'sent';
+    case Failed = 'failed';
+}

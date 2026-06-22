@@ -1,12 +1,141 @@
 import { Head } from '@inertiajs/react';
 import { Bell, CakeSlice, Plus, Store } from 'lucide-react';
 import { PageHeader } from '@/components/page-header';
-import { addOns, cakeSizes } from '@/lib/cake-shop-fixtures';
-import { formatRupiah } from '@/lib/formatters';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { addOns, cakeSizes } from '@/lib/cake-shop-fixtures';
+import { formatRupiah } from '@/lib/formatters';
 
-export default function Settings() { return <><Head title="Pengaturan"/><div className="space-y-6 p-4 md:p-6"><PageHeader title="Pengaturan" description="Kelola profil toko, master harga, dan konfigurasi notifikasi."/><div className="grid gap-6 xl:grid-cols-2"><Card><CardHeader><Store className="size-5 text-primary"/><CardTitle>Profil toko</CardTitle><CardDescription>Informasi yang muncul di halaman order dan invoice.</CardDescription></CardHeader><CardContent className="grid gap-4"><Field label="Nama toko" defaultValue="Kue Bahagia"/><Field label="Nomor WhatsApp admin" defaultValue="6281234567890"/><Button className="w-fit">Simpan profil</Button></CardContent></Card><Card><CardHeader><Bell className="size-5 text-primary"/><CardTitle>Notifikasi WhatsApp</CardTitle><CardDescription>Fonnte dipakai oleh backend; token tidak pernah masuk browser.</CardDescription></CardHeader><CardContent className="grid gap-4"><Field label="Template pelanggan" defaultValue="Halo {name}, pesanan {order_number} berhasil dibuat."/><Field label="Template admin" defaultValue="Pesanan baru {order_number} dari {customer_name}."/><Button className="w-fit">Simpan template</Button></CardContent></Card><Card><CardHeader><CakeSlice className="size-5 text-primary"/><CardTitle>Ukuran dan harga kue</CardTitle><CardDescription>Harga statis menjadi sumber harga order.</CardDescription></CardHeader><CardContent className="space-y-3">{cakeSizes.map((size) => <div key={size.id} className="flex items-center justify-between rounded-lg border p-3"><span className="font-medium">{size.name}</span><span>{formatRupiah(size.price)}</span></div>)}<Button variant="outline"><Plus className="size-4"/>Tambah ukuran</Button></CardContent></Card><Card><CardHeader><CardTitle>Item tambahan</CardTitle><CardDescription>Item ini dapat dipilih pelanggan sebagai pelengkap order.</CardDescription></CardHeader><CardContent className="space-y-3">{addOns.map((item) => <div key={item.id} className="flex items-center justify-between rounded-lg border p-3"><span className="font-medium">{item.name}</span><span>{formatRupiah(item.price)} / {item.unit}</span></div>)}<Button variant="outline"><Plus className="size-4"/>Tambah item</Button></CardContent></Card></div></div></>; }
-function Field({ label, defaultValue }: { label: string; defaultValue: string }) { return <div className="grid gap-2"><Label>{label}</Label><Input defaultValue={defaultValue}/></div>; }
+export default function Settings() {
+    return (
+        <>
+            <Head title="Pengaturan" />
+            <div className="space-y-6 p-4 md:p-6">
+                <PageHeader
+                    title="Pengaturan"
+                    description="Kelola profil toko, master harga, dan konfigurasi notifikasi."
+                />
+                <div className="grid gap-6 xl:grid-cols-2">
+                    <Card>
+                        <CardHeader>
+                            <Store className="size-5 text-primary" />
+                            <CardTitle>Profil toko</CardTitle>
+                            <CardDescription>
+                                Informasi yang muncul di halaman order dan
+                                invoice.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="grid gap-4">
+                            <Field
+                                label="Nama toko"
+                                defaultValue="Kue Bahagia"
+                            />
+                            <Field
+                                label="Nomor WhatsApp admin"
+                                defaultValue="6281234567890"
+                            />
+                            <Button className="w-fit">Simpan profil</Button>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <Bell className="size-5 text-primary" />
+                            <CardTitle>Notifikasi WhatsApp</CardTitle>
+                            <CardDescription>
+                                Fonnte dipakai oleh backend; token tidak pernah
+                                masuk browser.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="grid gap-4">
+                            <Field
+                                label="Template pelanggan"
+                                defaultValue="Halo {name}, pesanan {order_number} berhasil dibuat."
+                            />
+                            <Field
+                                label="Template admin"
+                                defaultValue="Pesanan baru {order_number} dari {customer_name}."
+                            />
+                            <Button className="w-fit">Simpan template</Button>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <CakeSlice className="size-5 text-primary" />
+                            <CardTitle>Ukuran dan harga kue</CardTitle>
+                            <CardDescription>
+                                Harga statis menjadi sumber harga order.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {cakeSizes.map((size) => (
+                                <div
+                                    key={size.id}
+                                    className="flex items-center justify-between rounded-lg border p-3"
+                                >
+                                    <span className="font-medium">
+                                        {size.name}
+                                    </span>
+                                    <span>{formatRupiah(size.price)}</span>
+                                </div>
+                            ))}
+                            <Button variant="outline">
+                                <Plus className="size-4" />
+                                Tambah ukuran
+                            </Button>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Item tambahan</CardTitle>
+                            <CardDescription>
+                                Item ini dapat dipilih pelanggan sebagai
+                                pelengkap order.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {addOns.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="flex items-center justify-between rounded-lg border p-3"
+                                >
+                                    <span className="font-medium">
+                                        {item.name}
+                                    </span>
+                                    <span>
+                                        {formatRupiah(item.price)} / {item.unit}
+                                    </span>
+                                </div>
+                            ))}
+                            <Button variant="outline">
+                                <Plus className="size-4" />
+                                Tambah item
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        </>
+    );
+}
+function Field({
+    label,
+    defaultValue,
+}: {
+    label: string;
+    defaultValue: string;
+}) {
+    return (
+        <div className="grid gap-2">
+            <Label>{label}</Label>
+            <Input defaultValue={defaultValue} />
+        </div>
+    );
+}

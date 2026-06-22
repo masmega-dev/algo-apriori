@@ -9,5 +9,7 @@ const variants: Record<OrderStatus, 'default' | 'secondary' | 'destructive'> = {
 };
 
 export function StatusBadge({ status }: { status: OrderStatus }) {
-    return <Badge variant={variants[status]}>{formatOrderStatus(status)}</Badge>;
+    return (
+        <Badge variant={variants[status]}>{formatOrderStatus(status)}</Badge>
+    );
 }

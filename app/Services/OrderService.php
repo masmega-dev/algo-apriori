@@ -64,6 +64,6 @@ class OrderService
             throw ValidationException::withMessages(['customer_phone' => 'Nomor WhatsApp tidak valid.']);
         }
 
-return $phone;
+        return $phone;
     }
 }
