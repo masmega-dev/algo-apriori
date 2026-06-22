@@ -1,10 +1,11 @@
 import { Head } from '@inertiajs/react';
 import { Download, Plus } from 'lucide-react';
-import { AdminOrderTable } from '@/components/admin-order-table';
+import { OrdersPageContent } from '@/components/admin/orders-page-content';
+import type { ComponentProps } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 
-export default function Orders() {
+export default function Orders(props: ComponentProps<typeof OrdersPageContent>) {
     return (
         <>
             <Head title="Daftar Order" />
@@ -25,7 +26,7 @@ export default function Orders() {
                         </>
                     }
                 />
-                <AdminOrderTable />
+                <OrdersPageContent {...props} />
             </div>
         </>
     );

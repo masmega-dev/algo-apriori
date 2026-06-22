@@ -41,3 +41,24 @@ Name tests by behavior, for example `PublicOrderTest::test_order_is_saved_when_n
 ## Commits and Pull Requests
 
 No Git history exists yet, so use Conventional Commit-style messages: `feat: add public invoice token` or `fix: recalculate delivery address validation`. Keep commits focused. Pull requests need a concise problem/solution description, migration or environment notes, test evidence, linked issue when available, and screenshots for UI changes.
+
+## Code Formatting Rules
+
+- Never minify, compress, or write application source code as a single line.
+- Use one statement per line.
+- Preserve readable indentation and line breaks.
+- PHP code must follow PSR-12 and Laravel conventions.
+- After modifying PHP files, always run:
+
+    ./vendor/bin/pint --dirty
+
+- React and TypeScript code must be formatted using Prettier and ESLint.
+- After modifying frontend files, always run:
+
+    npm run format
+    npm run lint
+
+- Do not finish a task while formatter, lint, build, or test commands fail.
+- Do not format or modify vendor/, node_modules/, storage/, or generated build files.
+- Prefer readable methods, early returns, typed properties, enums, actions, and service classes.
+- Do not put an entire method body on one line.

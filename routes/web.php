@@ -1,19 +1,30 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\AprioriController;
+use App\Http\Controllers\Admin\MasterDataController;
+use App\Http\Controllers\Admin\WhatsappLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('admin/dashboard', DashboardController::class)->name('dashboard');
     Route::get('admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
     Route::post('admin/orders', [OrderController::class, 'store'])->name('admin.orders.store');
     Route::get('admin/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
     Route::patch('admin/orders/{order}/complete', [OrderController::class, 'complete'])->name('admin.orders.complete');
     Route::delete('admin/orders/{order}', [OrderController::class, 'destroy'])->name('admin.orders.destroy');
-    Route::inertia('admin/reports', 'admin/reports')->name('admin.reports');
-    Route::inertia('admin/settings', 'admin/settings')->name('admin.settings');
+    Route::get('admin/reports', [AprioriController::class, 'index'])->name('admin.reports');
+    Route::post('admin/apriori', [AprioriController::class, 'store'])->name('admin.apriori.store');
+    Route::get('admin/apriori/{aprioriAnalysisRun}', [AprioriController::class, 'show'])->name('admin.apriori.show');
+    Route::get('admin/settings', [MasterDataController::class, 'index'])->name('admin.settings');
+    Route::put('admin/settings', [MasterDataController::class, 'updateSettings'])->name('admin.settings.update');
+    Route::post('admin/master/{resource}', [MasterDataController::class, 'store'])->name('admin.master.store');
+    Route::put('admin/master/{resource}/{id}', [MasterDataController::class, 'update'])->name('admin.master.update');
+    Route::delete('admin/master/{resource}/{id}', [MasterDataController::class, 'deactivate'])->name('admin.master.deactivate');
+    Route::post('admin/orders/{order}/whatsapp/resend', [WhatsappLogController::class, 'resend'])->name('admin.orders.whatsapp.resend');
 });
 
 require __DIR__.'/settings.php';
