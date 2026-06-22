@@ -1,0 +1,11 @@
+import { MoreHorizontal, Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { StatusBadge } from '@/components/status-badge';
+import { recentOrders } from '@/lib/cake-shop-fixtures';
+import { formatRupiah } from '@/lib/formatters';
+
+export function AdminOrderTable() {
+    return <div className="space-y-4"><div className="flex flex-col gap-3 sm:flex-row"><div className="relative flex-1"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"/><Input className="pl-9" placeholder="Cari nomor order, nama, atau WhatsApp"/></div><Select defaultValue="all"><SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="Semua status"/></SelectTrigger><SelectContent><SelectItem value="all">Semua status</SelectItem><SelectItem value="pending">Menunggu</SelectItem><SelectItem value="completed">Selesai</SelectItem><SelectItem value="cancelled">Dibatalkan</SelectItem></SelectContent></Select></div><div className="overflow-x-auto rounded-xl border"><table className="w-full min-w-[720px] text-left text-sm"><thead className="bg-muted/50 text-muted-foreground"><tr><th className="px-4 py-3 font-medium">Order</th><th className="px-4 py-3 font-medium">Pickup</th><th className="px-4 py-3 font-medium">Total</th><th className="px-4 py-3 font-medium">Status</th><th className="px-4 py-3"><span className="sr-only">Aksi</span></th></tr></thead><tbody>{recentOrders.map((order) => <tr key={order.id} className="border-t hover:bg-muted/30"><td className="px-4 py-4"><p className="font-medium">{order.customerName}</p><p className="text-xs text-muted-foreground">{order.id}</p></td><td className="px-4 py-4 text-muted-foreground">{order.pickupAt}</td><td className="px-4 py-4 font-medium">{formatRupiah(order.total)}</td><td className="px-4 py-4"><StatusBadge status={order.status}/></td><td className="px-4 py-4 text-right"><Button variant="ghost" size="icon"><MoreHorizontal className="size-4"/><span className="sr-only">Aksi order</span></Button></td></tr>)}</tbody></table></div></div>;
+}
