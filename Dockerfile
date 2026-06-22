@@ -36,10 +36,14 @@ RUN --mount=type=cache,target=/tmp/composer-cache \
 
 #############################
 # 2) Frontend assets
+# PHP diperlukan oleh Wayfinder saat Vite build
 #############################
-FROM node:20-alpine AS frontend
+FROM php-base AS frontend
 
+USER root
 WORKDIR /app
+
+RUN apk add --no-cache nodejs npm
 
 COPY package.json package-lock.json ./
 
@@ -48,14 +52,31 @@ RUN --mount=type=cache,target=/root/.npm \
     --no-audit \
     --no-fund
 
-COPY resources ./resources
-COPY public ./public
+# Source Laravel dibutuhkan oleh `php artisan wayfinder:generate`
+COPY app ./app
 COPY bootstrap ./bootstrap
+COPY config ./config
+COPY database ./database
+COPY public ./public
+COPY resources ./resources
+COPY routes ./routes
+
+COPY artisan composer.json composer.lock ./
 COPY tsconfig.json ./
 COPY vite.config.* ./
-
-# Tambahkan file lain jika ada dan dibutuhkan Vite
 COPY components.json ./
+
+# Vendor Composer berisi Laravel dan package Wayfinder
+COPY --from=vendor /app/vendor ./vendor
+
+RUN mkdir -p \
+    storage/framework/cache/data \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/logs \
+    bootstrap/cache
+
+RUN php artisan package:discover --ansi
 
 RUN npm run build
 
