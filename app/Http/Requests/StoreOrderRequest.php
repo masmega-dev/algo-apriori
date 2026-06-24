@@ -38,4 +38,49 @@ class StoreOrderRequest extends FormRequest
             'items.*.quantity' => ['required', 'integer', 'min:1', 'max:100'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'required' => ':attribute wajib diisi.',
+            'required_unless' => ':attribute wajib diisi untuk pesanan delivery / COD.',
+            'string' => ':attribute harus berupa teks.',
+            'integer' => ':attribute harus berupa angka.',
+            'date' => ':attribute harus berupa tanggal dan jam yang valid.',
+            'after' => ':attribute harus setelah waktu saat ini.',
+            'array' => ':attribute tidak valid.',
+            'exists' => ':attribute yang dipilih tidak tersedia.',
+            'distinct' => ':attribute tidak boleh dipilih lebih dari satu kali.',
+            'enum' => ':attribute tidak valid.',
+            'image' => ':attribute harus berupa file gambar.',
+            'min.numeric' => ':attribute minimal :min.',
+            'max.string' => ':attribute maksimal :max karakter.',
+            'max.numeric' => ':attribute maksimal :max.',
+            'reference_image.max' => 'Foto referensi maksimal 5 MB.',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'customer_name' => 'nama pemesan',
+            'customer_phone' => 'nomor WhatsApp',
+            'fulfillment_method' => 'metode penerimaan',
+            'fulfillment_at' => 'jadwal pesanan',
+            'delivery_address' => 'alamat lengkap',
+            'cake_size_id' => 'ukuran kue',
+            'cake_shape_id' => 'bentuk kue',
+            'cake_text' => 'tulisan pada kue',
+            'age_text' => 'usia',
+            'base_color' => 'warna dasar',
+            'decoration_color' => 'warna hiasan',
+            'character_theme' => 'tema atau karakter',
+            'customer_notes' => 'catatan pelanggan',
+            'admin_notes' => 'catatan admin',
+            'reference_image' => 'foto referensi',
+            'items' => 'item tambahan',
+            'items.*.id' => 'item tambahan',
+            'items.*.quantity' => 'jumlah item tambahan',
+        ];
+    }
 }

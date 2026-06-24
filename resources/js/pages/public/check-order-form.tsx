@@ -24,8 +24,17 @@ export default function CheckOrderForm() {
                     </p>
                     <form onSubmit={submit} className="mt-6 grid gap-4">
                         <label className="grid gap-2 text-sm font-medium">
-                            Nomor order
+                            <span>
+                                Nomor order{' '}
+                                <span
+                                    aria-hidden="true"
+                                    className="text-red-600"
+                                >
+                                    *
+                                </span>
+                            </span>
                             <Input
+                                aria-required="true"
                                 placeholder="ORD-202606-0001"
                                 value={form.data.order_number}
                                 onChange={(e) =>
@@ -39,8 +48,17 @@ export default function CheckOrderForm() {
                             )}
                         </label>
                         <label className="grid gap-2 text-sm font-medium">
-                            Nomor WhatsApp
+                            <span>
+                                Nomor WhatsApp{' '}
+                                <span
+                                    aria-hidden="true"
+                                    className="text-red-600"
+                                >
+                                    *
+                                </span>
+                            </span>
                             <Input
+                                aria-required="true"
                                 placeholder="0812..."
                                 value={form.data.phone}
                                 onChange={(e) =>

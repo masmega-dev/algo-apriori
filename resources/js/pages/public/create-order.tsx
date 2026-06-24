@@ -238,8 +238,10 @@ export default function CreateOrder({ sizes, shapes, items, settings }: Props) {
                                 <Field
                                     error={form.errors.customer_name}
                                     label="Nama pemesan"
+                                    required
                                 >
                                     <Input
+                                        aria-required="true"
                                         value={form.data.customer_name}
                                         onChange={(event) =>
                                             form.setData(
@@ -252,8 +254,10 @@ export default function CreateOrder({ sizes, shapes, items, settings }: Props) {
                                 <Field
                                     error={form.errors.customer_phone}
                                     label="Nomor WhatsApp"
+                                    required
                                 >
                                     <Input
+                                        aria-required="true"
                                         placeholder="0812..."
                                         value={form.data.customer_phone}
                                         onChange={(event) =>
@@ -268,7 +272,7 @@ export default function CreateOrder({ sizes, shapes, items, settings }: Props) {
 
                             <fieldset className="mt-5">
                                 <legend className="text-sm font-medium">
-                                    Metode penerimaan
+                                    Metode penerimaan <RequiredMark />
                                 </legend>
                                 <div className="mt-2 grid gap-2 sm:grid-cols-2">
                                     {(
@@ -302,6 +306,11 @@ export default function CreateOrder({ sizes, shapes, items, settings }: Props) {
                                         </label>
                                     ))}
                                 </div>
+                                {form.errors.fulfillment_method && (
+                                    <p className="mt-2 text-xs font-normal text-red-600">
+                                        {form.errors.fulfillment_method}
+                                    </p>
+                                )}
                             </fieldset>
 
                             <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -310,6 +319,7 @@ export default function CreateOrder({ sizes, shapes, items, settings }: Props) {
                                     label={scheduleLabel(
                                         form.data.fulfillment_method,
                                     )}
+                                    required
                                 >
                                     <FulfillmentDateTimePicker
                                         minimumDate={minimumFulfillmentDate}
@@ -326,8 +336,10 @@ export default function CreateOrder({ sizes, shapes, items, settings }: Props) {
                                     <Field
                                         error={form.errors.delivery_address}
                                         label="Alamat lengkap"
+                                        required
                                     >
                                         <Textarea
+                                            aria-required="true"
                                             className="min-h-24"
                                             onChange={(event) =>
                                                 form.setData(
@@ -346,6 +358,7 @@ export default function CreateOrder({ sizes, shapes, items, settings }: Props) {
                         <Section title="Detail kue">
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <CatalogSelect
+                                    error={form.errors.cake_size_id}
                                     label="Ukuran"
                                     onChange={(value) =>
                                         form.setData('cake_size_id', value)
@@ -355,6 +368,7 @@ export default function CreateOrder({ sizes, shapes, items, settings }: Props) {
                                     value={form.data.cake_size_id}
                                 />
                                 <CatalogSelect
+                                    error={form.errors.cake_shape_id}
                                     label="Bentuk"
                                     onChange={(value) =>
                                         form.setData('cake_shape_id', value)
@@ -579,15 +593,19 @@ function Section({
 function Field({
     label,
     error,
+    required = false,
     children,
 }: {
     label: string;
     error?: string;
+    required?: boolean;
     children: React.ReactNode;
 }) {
     return (
         <label className="grid gap-2 text-sm font-medium">
-            {label}
+            <span>
+                {label} {required && <RequiredMark />}
+            </span>
             {children}
             {error && (
                 <span className="text-xs font-normal text-red-600">
@@ -598,21 +616,31 @@ function Field({
     );
 }
 
+function RequiredMark() {
+    return (
+        <span aria-hidden="true" className="text-red-600">
+            *
+        </span>
+    );
+}
+
 function CatalogSelect({
     label,
+    error,
     value,
     onChange,
     options,
     priceKey,
 }: {
     label: string;
+    error?: string;
     value: string;
     onChange: (value: string) => void;
     options: Catalog[];
     priceKey: 'base_price' | 'price_adjustment';
 }) {
     return (
-        <Field label={label}>
+        <Field error={error} label={label} required>
             <Select onValueChange={onChange} value={value}>
                 <SelectTrigger className="w-full">
                     <SelectValue placeholder={`Pilih ${label.toLowerCase()}`} />

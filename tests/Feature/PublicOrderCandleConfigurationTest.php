@@ -65,7 +65,9 @@ class PublicOrderCandleConfigurationTest extends TestCase
         ]));
 
         $invalid->assertRedirect(route('order'));
-        $invalid->assertSessionHasErrors('delivery_address');
+        $invalid->assertSessionHasErrors([
+            'delivery_address' => 'alamat lengkap wajib diisi untuk pesanan delivery / COD.',
+        ]);
 
         $this->post(route('order.store'), $this->orderData($catalog, [], [
             'fulfillment_method' => 'delivery',

@@ -17,4 +17,21 @@ class CheckOrderRequest extends FormRequest
     {
         return ['order_number' => ['required', 'string', 'max:40'], 'phone' => ['required', 'string', 'max:20']];
     }
+
+    public function messages(): array
+    {
+        return [
+            'required' => ':attribute wajib diisi.',
+            'string' => ':attribute harus berupa teks.',
+            'max.string' => ':attribute maksimal :max karakter.',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'order_number' => 'nomor order',
+            'phone' => 'nomor WhatsApp',
+        ];
+    }
 }
