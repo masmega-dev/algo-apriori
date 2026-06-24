@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,13 +16,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('admin'),
-        ]);
+        User::query()->updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('admin'),
+            ],
+        )->forceFill([
+            'email_verified_at' => now(),
+        ])->save();
 
         $this->call(CakeShopSeeder::class);
-        $this->call(AprioriDemoSeeder::class);
+
+        if (app()->environment(['local', 'testing'])) {
+            $this->call(AprioriDemoSeeder::class);
+        }
     }
 }
