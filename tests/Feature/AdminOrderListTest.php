@@ -62,14 +62,24 @@ class AdminOrderListTest extends TestCase
         $this->createOrder(OrderStatus::Completed, '2026-06-25 09:00:00');
         $this->createOrder(OrderStatus::Cancelled, '2026-06-25 09:30:00');
         $this->createOrder(OrderStatus::Pending, '2026-06-24 09:00:00');
+        $this->createOrder(
+            status: OrderStatus::Completed,
+            orderedAt: '2026-06-24 09:00:00',
+            completedAt: '2026-06-25 10:00:00',
+        );
+        $this->createOrder(
+            status: OrderStatus::Completed,
+            orderedAt: '2026-06-25 09:00:00',
+            completedAt: '2026-06-26 10:00:00',
+        );
 
         $this->actingAs($this->user)
             ->get(route('admin.orders.index'))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('admin/orders')
-                ->where('summary.total', 3)
-                ->where('summary.completed', 1)
+                ->where('summary.total', 4)
+                ->where('summary.completed', 2)
                 ->where('summary.pending', 1),
             );
     }
@@ -105,7 +115,7 @@ class AdminOrderListTest extends TestCase
         Storage::disk('public')->assertExists($logoPath);
     }
 
-    private function createOrder(OrderStatus $status, string $orderedAt): Order
+    private function createOrder(OrderStatus $status, string $orderedAt, ?string $completedAt = null): Order
     {
         $customer = Customer::query()->create([
             'name' => 'Pelanggan '.Str::random(5),
@@ -131,8 +141,8 @@ class AdminOrderListTest extends TestCase
             'grand_total' => 150000,
             'status' => $status,
             'payment_status' => $status === OrderStatus::Completed ? PaymentStatus::Paid : PaymentStatus::Unpaid,
-            'completed_at' => $status === OrderStatus::Completed ? $orderedAt : null,
-            'paid_at' => $status === OrderStatus::Completed ? $orderedAt : null,
+            'completed_at' => $status === OrderStatus::Completed ? ($completedAt ?? $orderedAt) : null,
+            'paid_at' => $status === OrderStatus::Completed ? ($completedAt ?? $orderedAt) : null,
         ]);
     }
 }

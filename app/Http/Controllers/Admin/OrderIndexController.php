@@ -25,12 +25,15 @@ class OrderIndexController extends Controller
             ->when($request->filled('pickup_to'), fn (Builder $orders) => $orders->whereDate('fulfillment_at', '<=', $request->date('pickup_to')));
 
         $today = now()->toDateString();
-        $todayQuery = Order::query()->whereDate('ordered_at', $today);
+        $todayOrders = Order::query()->whereDate('ordered_at', $today);
+        $completedToday = Order::query()
+            ->where('status', OrderStatus::Completed)
+            ->whereDate('completed_at', $today);
 
         return Inertia::render('admin/orders', [
             'orders' => $query->latest('fulfillment_at')->paginate(20)->withQueryString(),
             'filters' => $request->only(['search', 'status', 'ordered_from', 'ordered_to', 'pickup_from', 'pickup_to']),
-            'summary' => ['total' => (clone $todayQuery)->count(), 'completed' => (clone $todayQuery)->where('status', OrderStatus::Completed)->count(), 'pending' => (clone $todayQuery)->where('status', OrderStatus::Pending)->count()],
+            'summary' => ['total' => (clone $todayOrders)->count(), 'completed' => $completedToday->count(), 'pending' => (clone $todayOrders)->where('status', OrderStatus::Pending)->count()],
         ]);
     }
 
