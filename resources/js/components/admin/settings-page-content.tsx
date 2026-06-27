@@ -24,6 +24,7 @@ type Settings = {
     logo_url?: string | null;
     customer_order_template: string;
     admin_order_template: string;
+    completed_order_template: string;
     public_order_enabled: boolean;
     minimum_pickup_days: number;
     opening_time: string;
@@ -68,6 +69,8 @@ const placeholders = [
     '{delivery_address}',
     '{grand_total}',
     '{invoice_url}',
+    '{completed_date}',
+    '{completed_time}',
 ];
 
 const sampleValues: Record<string, string> = {
@@ -80,6 +83,8 @@ const sampleValues: Record<string, string> = {
     '{delivery_address}': 'Jl. Mawar No. 21, Bandung',
     '{grand_total}': '175.000',
     '{invoice_url}': 'https://toko.test/invoice/xxx',
+    '{completed_date}': '25 Jun 2026',
+    '{completed_time}': '16:30',
 };
 
 export function SettingsPageContent({ settings, sizes, shapes, items }: Props) {
@@ -357,6 +362,17 @@ export function SettingsPageContent({ settings, sizes, shapes, items }: Props) {
                                     form.setData('admin_order_template', value)
                                 }
                                 value={form.data.admin_order_template}
+                            />
+                            <TemplateField
+                                label="Pesan saat order selesai"
+                                id="completed-order-template"
+                                onChange={(value) =>
+                                    form.setData(
+                                        'completed_order_template',
+                                        value,
+                                    )
+                                }
+                                value={form.data.completed_order_template}
                             />
                         </CardContent>
                     </Card>

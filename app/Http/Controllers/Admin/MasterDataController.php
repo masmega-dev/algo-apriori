@@ -11,6 +11,7 @@ use App\Models\CakeSize;
 use App\Models\StoreSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -22,7 +23,7 @@ class MasterDataController extends Controller
         $settings = StoreSetting::query()->first() ?? new StoreSetting(StoreSetting::defaults());
         $logoPath = $settings->logo_path;
 
-        return Inertia::render('admin/settings', ['sizes' => CakeSize::query()->orderBy('sort_order')->get(), 'shapes' => CakeShape::query()->orderBy('sort_order')->get(), 'items' => AdditionalItem::query()->orderBy('sort_order')->get(), 'settings' => [...$settings->toArray(), 'logo_url' => $logoPath ? Storage::disk('public')->url($logoPath) : null]]);
+        return Inertia::render('admin/settings', ['sizes' => CakeSize::query()->orderBy('sort_order')->get(), 'shapes' => CakeShape::query()->orderBy('sort_order')->get(), 'items' => AdditionalItem::query()->orderBy('sort_order')->get(), 'settings' => [...StoreSetting::defaults(), ...$settings->toArray(), 'logo_url' => $logoPath ? Storage::disk('public')->url($logoPath) : null]]);
     }
 
     public function store(Request $request, string $resource): RedirectResponse
@@ -51,8 +52,11 @@ class MasterDataController extends Controller
 
     public function updateSettings(Request $request): RedirectResponse
     {
-        $data = $request->validate(['store_name' => ['required', 'string', 'max:100'], 'store_phone' => ['required', 'string', 'max:20'], 'admin_whatsapp' => ['required', 'string', 'max:20'], 'store_address' => ['nullable', 'string'], 'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'], 'customer_order_template' => ['required', 'string'], 'admin_order_template' => ['required', 'string'], 'public_order_enabled' => ['boolean'], 'minimum_pickup_days' => ['required', 'integer', 'min:0', 'max:30'], 'opening_time' => ['required', 'date_format:H:i'], 'closing_time' => ['required', 'date_format:H:i'], 'delivery_fee' => ['required', 'numeric', 'min:0']]);
+        $data = $request->validate(['store_name' => ['required', 'string', 'max:100'], 'store_phone' => ['required', 'string', 'max:20'], 'admin_whatsapp' => ['required', 'string', 'max:20'], 'store_address' => ['nullable', 'string'], 'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'], 'customer_order_template' => ['required', 'string'], 'admin_order_template' => ['required', 'string'], 'completed_order_template' => ['nullable', 'string'], 'public_order_enabled' => ['boolean'], 'minimum_pickup_days' => ['required', 'integer', 'min:0', 'max:30'], 'opening_time' => ['required', 'date_format:H:i'], 'closing_time' => ['required', 'date_format:H:i'], 'delivery_fee' => ['required', 'numeric', 'min:0']]);
         unset($data['logo']);
+        $data['completed_order_template'] = filled($data['completed_order_template'] ?? null)
+            ? $data['completed_order_template']
+            : StoreSetting::defaults()['completed_order_template'];
 
         $settings = StoreSetting::query()->firstOrCreate([], StoreSetting::defaults());
         if ($request->hasFile('logo')) {
@@ -61,6 +65,10 @@ class MasterDataController extends Controller
             }
 
             $data['logo_path'] = $request->file('logo')->store('store-logos', 'public');
+        }
+
+        if (! Schema::hasColumn('store_settings', 'completed_order_template')) {
+            unset($data['completed_order_template']);
         }
 
         $settings->update($data);

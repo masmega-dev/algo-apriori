@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Jobs\SendOrderWhatsappNotification;
 use App\Models\AdditionalItem;
 use App\Models\CakeShape;
 use App\Models\CakeSize;
 use App\Models\Order;
 use App\Models\StoreSetting;
 use App\Models\User;
+use App\Models\WhatsappLog;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -114,6 +116,15 @@ class PublicOrderCandleConfigurationTest extends TestCase
         $this->assertSame($user->id, $order->paid_by);
         $this->assertNotNull($order->completed_at);
         $this->assertNotNull($order->paid_at);
+
+        $log = WhatsappLog::query()
+            ->where('order_id', $order->id)
+            ->where('message_type', 'order_completed')
+            ->firstOrFail();
+
+        $this->assertSame('customer', $log->recipient_type);
+        $this->assertStringContainsString($order->order_number, $log->message);
+        Queue::assertPushed(SendOrderWhatsappNotification::class, 3);
     }
 
     /** @return array{size: CakeSize, shape: CakeShape, candle: AdditionalItem} */
@@ -125,6 +136,7 @@ class PublicOrderCandleConfigurationTest extends TestCase
             'admin_whatsapp' => '6281234567890',
             'customer_order_template' => 'Order {order_number}',
             'admin_order_template' => 'Order {order_number}',
+            'completed_order_template' => 'Selesai {order_number}',
             'opening_time' => '08:00',
             'closing_time' => '20:00',
             'minimum_pickup_days' => 1,

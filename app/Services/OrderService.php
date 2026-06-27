@@ -22,6 +22,8 @@ use Illuminate\Validation\ValidationException;
 
 class OrderService
 {
+    public function __construct(private readonly OrderWhatsappNotificationService $notifications) {}
+
     /** @param array<string, mixed> $data */
     public function create(array $data, int $userId): Order
     {
@@ -138,6 +140,9 @@ class OrderService
                 'new_status' => OrderStatus::Completed->value,
                 'notes' => 'Pembayaran dikonfirmasi lunas.',
             ]);
+
+            $setting = StoreSetting::query()->first() ?? new StoreSetting(StoreSetting::defaults());
+            DB::afterCommit(fn () => $this->notifications->queueCompletedOrderNotification($order->refresh(), $setting));
         });
     }
 

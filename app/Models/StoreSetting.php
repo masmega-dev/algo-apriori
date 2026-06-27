@@ -21,6 +21,7 @@ class StoreSetting extends Model
             'logo_path' => null,
             'customer_order_template' => 'Pesanan {order_number} berhasil dibuat.',
             'admin_order_template' => 'Pesanan baru {order_number}.',
+            'completed_order_template' => 'Halo {customer_name}, pesanan {order_number} sudah selesai dan pembayaran sudah dikonfirmasi. Terima kasih sudah memesan di Kue Bahagia.',
             'public_order_enabled' => true,
             'minimum_pickup_days' => 1,
             'opening_time' => '08:00',

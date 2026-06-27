@@ -8,8 +8,6 @@ use App\Enums\FulfillmentMethod;
 use App\Enums\OrderSource;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
-use App\Enums\WhatsappStatus;
-use App\Jobs\SendOrderWhatsappNotification;
 use App\Models\AdditionalItem;
 use App\Models\CakeShape;
 use App\Models\CakeSize;
@@ -18,7 +16,6 @@ use App\Models\Order;
 use App\Models\OrderStatusHistory;
 use App\Models\OrderSubmissionToken;
 use App\Models\StoreSetting;
-use App\Models\WhatsappLog;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +24,8 @@ use Illuminate\Validation\ValidationException;
 
 class PublicOrderService
 {
+    public function __construct(private readonly OrderWhatsappNotificationService $notifications) {}
+
     /** @param array<string, mixed> $data */
     public function create(array $data): Order
     {
@@ -118,7 +117,7 @@ class PublicOrderService
                 'new_status' => OrderStatus::Pending->value,
             ]);
             $token->update(['order_id' => $order->id]);
-            DB::afterCommit(fn () => $this->queueNotifications($order, $setting));
+            DB::afterCommit(fn () => $this->notifications->queueNewOrderNotifications($order, $setting));
 
             return $order;
         });
@@ -169,50 +168,6 @@ class PublicOrderService
         }
 
         return $total;
-    }
-
-    private function queueNotifications(Order $order, StoreSetting $setting): void
-    {
-        $messages = [
-            ['customer', $order->customer_name_snapshot, $order->customer_phone_snapshot, $this->render($setting->customer_order_template, $order)],
-            ['admin', 'Admin Toko', $setting->admin_whatsapp, $this->render($setting->admin_order_template, $order)],
-        ];
-
-        foreach ($messages as [$recipientType, $recipientName, $phone, $message]) {
-            $log = WhatsappLog::query()->create([
-                'order_id' => $order->id,
-                'recipient_type' => $recipientType,
-                'message_type' => 'new_order',
-                'recipient_name' => $recipientName,
-                'phone' => $phone,
-                'provider' => 'fonnte',
-                'message' => $message,
-                'status' => WhatsappStatus::Pending,
-            ]);
-            SendOrderWhatsappNotification::dispatch($log->id);
-        }
-    }
-
-    private function render(string $template, Order $order): string
-    {
-        $date = $order->fulfillment_at->format('d M Y');
-        $time = $order->fulfillment_at->format('H:i');
-
-        return strtr($template, [
-            '{name}' => $order->customer_name_snapshot,
-            '{customer_name}' => $order->customer_name_snapshot,
-            '{customer_phone}' => $order->customer_phone_snapshot,
-            '{order_number}' => $order->order_number,
-            '{fulfillment_date}' => $date,
-            '{fulfillment_time}' => $time,
-            '{pickup_date}' => $date,
-            '{pickup_time}' => $time,
-            '{pickup_at}' => $order->fulfillment_at->format('d M Y H:i'),
-            '{fulfillment_method}' => $order->fulfillment_method->label(),
-            '{delivery_address}' => $order->delivery_address ?? '-',
-            '{grand_total}' => number_format((float) $order->grand_total, 0, ',', '.'),
-            '{invoice_url}' => route('invoice.show', $order->public_token),
-        ]);
     }
 
     private function validateFulfillment(Carbon $fulfillmentAt, StoreSetting $setting): void
