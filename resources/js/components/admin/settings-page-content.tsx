@@ -102,7 +102,6 @@ export function SettingsPageContent({ settings, sizes, shapes, items }: Props) {
 
     function submit(event: FormEvent): void {
         event.preventDefault();
-        form.transform((data) => ({ ...data, _method: 'put' }));
         form.post('/admin/settings', {
             forceFormData: true,
         });

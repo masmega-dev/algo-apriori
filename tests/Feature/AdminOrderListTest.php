@@ -137,7 +137,6 @@ class AdminOrderListTest extends TestCase
 
         $this->actingAs($this->user)
             ->post(route('admin.settings.update'), [
-                '_method' => 'put',
                 'store_name' => 'Kue Bahagia',
                 'store_phone' => '6281234567890',
                 'admin_whatsapp' => '6281234567890',
@@ -158,6 +157,39 @@ class AdminOrderListTest extends TestCase
 
         $this->assertNotNull($logoPath);
         Storage::disk('public')->assertExists($logoPath);
+    }
+
+    public function test_admin_can_update_store_settings_without_logo_upload(): void
+    {
+        StoreSetting::query()->create(StoreSetting::defaults());
+
+        $this->actingAs($this->user)
+            ->post(route('admin.settings.update'), [
+                'store_name' => 'Kue Mantap',
+                'store_phone' => '628111111111',
+                'admin_whatsapp' => '628222222222',
+                'store_address' => 'Jl. Baru',
+                'customer_order_template' => 'Halo {customer_name}',
+                'admin_order_template' => 'Order {order_number}',
+                'public_order_enabled' => true,
+                'minimum_pickup_days' => 2,
+                'opening_time' => '09:00',
+                'closing_time' => '18:00',
+                'delivery_fee' => 15000,
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('store_settings', [
+            'store_name' => 'Kue Mantap',
+            'store_phone' => '628111111111',
+            'admin_whatsapp' => '628222222222',
+            'store_address' => 'Jl. Baru',
+            'minimum_pickup_days' => 2,
+            'opening_time' => '09:00',
+            'closing_time' => '18:00',
+            'delivery_fee' => 15000,
+        ]);
     }
 
     private function createOrder(

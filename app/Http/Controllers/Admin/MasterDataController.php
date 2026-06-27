@@ -65,7 +65,9 @@ class MasterDataController extends Controller
 
         $settings->update($data);
 
-        return back()->with('success', 'Pengaturan toko diperbarui.');
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Pengaturan toko diperbarui.']);
+
+        return back();
     }
 
     /** @return class-string */
