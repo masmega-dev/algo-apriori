@@ -37,6 +37,7 @@ export function OrderDateRangeFilter({
         committedRange,
     );
     const [open, setOpen] = useState(false);
+    const visibleRange = open ? draftRange : committedRange;
 
     function select(next: DateRange | undefined): void {
         setDraftRange(next);
@@ -60,11 +61,11 @@ export function OrderDateRangeFilter({
         onChange({});
     }
 
-    const label = !draftRange?.from
+    const label = !visibleRange?.from
         ? placeholder
-        : !draftRange.to
-          ? `${format(draftRange.from, 'd MMM yyyy', { locale: id })} · pilih tanggal akhir`
-          : `${format(draftRange.from, 'd MMM', { locale: id })} – ${format(draftRange.to, 'd MMM yyyy', { locale: id })}`;
+        : !visibleRange.to
+          ? `${format(visibleRange.from, 'd MMM yyyy', { locale: id })} · pilih tanggal akhir`
+          : `${format(visibleRange.from, 'd MMM', { locale: id })} – ${format(visibleRange.to, 'd MMM yyyy', { locale: id })}`;
 
     return (
         <div className="relative">

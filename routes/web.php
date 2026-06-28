@@ -31,8 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('admin/apriori/{aprioriAnalysisRun}', [AprioriController::class, 'destroy'])->name('admin.apriori.destroy');
     Route::get('admin/reports/export', [AprioriController::class, 'export'])->name('admin.reports.export');
     Route::get('admin/settings', [MasterDataController::class, 'index'])->name('admin.settings');
-    Route::put('admin/settings', [MasterDataController::class, 'updateSettings'])->name('admin.settings.update');
-    Route::post('admin/settings', [MasterDataController::class, 'updateSettings']);
+    Route::post('admin/settings', [MasterDataController::class, 'updateSettings'])->name('admin.settings.update');
     Route::post('admin/master/{resource}', [MasterDataController::class, 'store'])->name('admin.master.store');
     Route::put('admin/master/{resource}/{id}', [MasterDataController::class, 'update'])->name('admin.master.update');
     Route::delete('admin/master/{resource}/{id}', [MasterDataController::class, 'deactivate'])->name('admin.master.deactivate');

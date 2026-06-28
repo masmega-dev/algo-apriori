@@ -47,18 +47,18 @@ export function PublicNavbar() {
                     ))}
                 </nav>
                 <div className="hidden items-center gap-2 md:flex">
+                    <Link href="/order">
+                        <Button className="bg-rose-600 text-white shadow-lg shadow-rose-200 hover:bg-rose-700 dark:bg-rose-500 dark:shadow-none dark:hover:bg-rose-400">
+                            <Gift className="size-4" />
+                            Pesan sekarang
+                        </Button>
+                    </Link>
                     <Link href={sessionAction.href}>
                         <Button
                             className="border-rose-200 bg-white/80 text-rose-700 hover:bg-rose-50 dark:border-slate-700 dark:bg-slate-900 dark:text-rose-200 dark:hover:bg-slate-800"
                             variant="outline"
                         >
                             {sessionAction.label}
-                        </Button>
-                    </Link>
-                    <Link href="/order">
-                        <Button className="bg-rose-600 text-white shadow-lg shadow-rose-200 hover:bg-rose-700 dark:bg-rose-500 dark:shadow-none dark:hover:bg-rose-400">
-                            <Gift className="size-4" />
-                            Pesan sekarang
                         </Button>
                     </Link>
                 </div>

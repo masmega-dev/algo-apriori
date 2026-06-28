@@ -1,4 +1,5 @@
 import { useForm } from '@inertiajs/react';
+import { format } from 'date-fns';
 import { Play, SlidersHorizontal } from 'lucide-react';
 import type { FormEvent, ReactNode } from 'react';
 import { OrderDateRangeFilter } from '@/components/admin/order-date-range-filter';
@@ -32,18 +33,17 @@ type Props = {
 };
 
 function today(): string {
-    return new Date().toLocaleDateString('en-CA', {
-        timeZone: 'Asia/Jakarta',
-    });
+    return formatDateValue(new Date());
 }
 
 function startOfMonth(): string {
     const date = new Date();
 
-    return new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString(
-        'en-CA',
-        { timeZone: 'Asia/Jakarta' },
-    );
+    return formatDateValue(new Date(date.getFullYear(), date.getMonth(), 1));
+}
+
+function formatDateValue(date: Date): string {
+    return format(date, 'yyyy-MM-dd');
 }
 
 export function AnalysisParameterCard({ defaults }: Props) {
@@ -65,8 +65,8 @@ export function AnalysisParameterCard({ defaults }: Props) {
         start.setDate(end.getDate() - (days - 1));
         form.setData({
             ...form.data,
-            date_from: start.toLocaleDateString('en-CA'),
-            date_to: end.toLocaleDateString('en-CA'),
+            date_from: formatDateValue(start),
+            date_to: formatDateValue(end),
         });
     }
 
@@ -76,8 +76,8 @@ export function AnalysisParameterCard({ defaults }: Props) {
         const end = new Date(now.getFullYear(), now.getMonth() + offset + 1, 0);
         form.setData({
             ...form.data,
-            date_from: start.toLocaleDateString('en-CA'),
-            date_to: end.toLocaleDateString('en-CA'),
+            date_from: formatDateValue(start),
+            date_to: formatDateValue(end),
         });
     }
 

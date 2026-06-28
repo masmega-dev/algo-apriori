@@ -5,8 +5,8 @@ import {
     Gift,
     HeartHandshake,
     PartyPopper,
-    Sparkles,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { PublicNavbar } from '@/components/public/public-navbar';
 import { Button } from '@/components/ui/button';
 
@@ -29,7 +29,26 @@ const benefits = [
     },
 ];
 
+const cakeSamples = [
+    '/image/sample-kue1.jpeg',
+    '/image/sample-kue2.jpeg',
+    '/image/sample-kue3.jpeg',
+    '/image/sample-kue4.jpeg',
+    '/image/sample-kue5.jpeg',
+    '/image/sample-kue6.jpeg',
+];
+
 export default function Home() {
+    const [activeSample, setActiveSample] = useState(0);
+
+    useEffect(() => {
+        const interval = window.setInterval(() => {
+            setActiveSample((current) => (current + 1) % cakeSamples.length);
+        }, 3500);
+
+        return () => window.clearInterval(interval);
+    }, []);
+
     return (
         <>
             <Head title="Kue Bahagia" />
@@ -38,40 +57,68 @@ export default function Home() {
                 <main>
                     <section className="relative overflow-hidden bg-[radial-gradient(circle_at_20%_20%,rgba(251,113,133,0.18),transparent_28%),radial-gradient(circle_at_85%_15%,rgba(251,146,60,0.18),transparent_24%),linear-gradient(135deg,#fff7ed,#fff,#fdf2f8)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(244,63,94,0.18),transparent_28%),radial-gradient(circle_at_85%_15%,rgba(14,165,233,0.12),transparent_24%),linear-gradient(135deg,#0f172a,#111827,#1e1b4b)]">
                         <div className="absolute inset-0 [background-image:radial-gradient(circle_at_center,rgba(244,63,94,0.2)_1.5px,transparent_1.5px)] [background-size:28px_28px] opacity-60 dark:opacity-20" />
-                        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:py-24">
+                        <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.1fr_.9fr] lg:items-center lg:py-24">
                             <div className="relative">
-                                <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-rose-700 shadow-sm ring-1 ring-rose-100 dark:bg-slate-900/80 dark:text-rose-200 dark:ring-slate-700">
-                                    <Sparkles className="size-4" />
-                                    Kue ulang tahun sesuai ceritamu
-                                </p>
-                                <h1 className="max-w-xl text-4xl font-bold tracking-tight text-slate-950 sm:text-6xl dark:text-white">
-                                    Rayakan momen manis dengan kue yang dibuat
-                                    khusus untukmu.
-                                </h1>
-                                <p className="mt-5 max-w-lg text-lg leading-8 text-slate-600 dark:text-slate-300">
-                                    Pesan kue ulang tahun tanpa ribet. Pilih
-                                    detailnya, pilih pickup atau delivery/COD,
-                                    lalu kami siapkan dengan sepenuh hati.
-                                </p>
-                                <div className="mt-8 flex flex-wrap gap-3">
-                                    <Link href="/order">
-                                        <Button
-                                            className="h-12 rounded-full bg-rose-600 px-7 text-base text-white shadow-xl shadow-rose-200 transition hover:-translate-y-0.5 hover:bg-rose-700 dark:bg-rose-500 dark:shadow-none dark:hover:bg-rose-400"
-                                            size="lg"
-                                        >
-                                            Pesan kue sekarang
-                                            <ArrowRight className="size-4" />
-                                        </Button>
-                                    </Link>
-                                    <Link href="/cek-order">
-                                        <Button
-                                            className="h-12 rounded-full border-rose-200 bg-white/80 px-7 text-base text-rose-700 hover:bg-rose-50 dark:border-slate-700 dark:bg-slate-900/80 dark:text-rose-200 dark:hover:bg-slate-800"
-                                            size="lg"
-                                            variant="outline"
-                                        >
-                                            Cek pesanan
-                                        </Button>
-                                    </Link>
+                                <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white/80 p-4 shadow-2xl shadow-rose-100 backdrop-blur dark:border-slate-700 dark:bg-slate-900/80 dark:shadow-none">
+                                    <div className="relative h-[420px] overflow-hidden rounded-[1.5rem] bg-slate-200 sm:h-[500px]">
+                                        {cakeSamples.map((sample, index) => (
+                                            <img
+                                                key={sample}
+                                                alt={`Sample kue ulang tahun ${index + 1}`}
+                                                className={`absolute inset-0 size-full object-cover transition duration-1000 ${
+                                                    activeSample === index
+                                                        ? 'scale-100 opacity-100'
+                                                        : 'scale-105 opacity-0'
+                                                }`}
+                                                src={sample}
+                                            />
+                                        ))}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/65 via-slate-950/10 to-transparent" />
+                                        <div className="absolute right-5 bottom-5 left-5 flex flex-col gap-4">
+                                            <div className="flex gap-2">
+                                                {cakeSamples.map(
+                                                    (sample, index) => (
+                                                        <button
+                                                            aria-label={`Tampilkan sample kue ${index + 1}`}
+                                                            className={`h-2.5 rounded-full transition ${
+                                                                activeSample ===
+                                                                index
+                                                                    ? 'w-8 bg-white'
+                                                                    : 'w-2.5 bg-white/50'
+                                                            }`}
+                                                            key={sample}
+                                                            onClick={() =>
+                                                                setActiveSample(
+                                                                    index,
+                                                                )
+                                                            }
+                                                            type="button"
+                                                        />
+                                                    ),
+                                                )}
+                                            </div>
+                                            <div className="flex flex-wrap gap-3">
+                                                <Link href="/order">
+                                                    <Button
+                                                        className="h-12 rounded-full bg-rose-600 px-7 text-base text-white shadow-xl shadow-rose-950/20 transition hover:-translate-y-0.5 hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-400"
+                                                        size="lg"
+                                                    >
+                                                        Pesan kue sekarang
+                                                        <ArrowRight className="size-4" />
+                                                    </Button>
+                                                </Link>
+                                                <Link href="/cek-order">
+                                                    <Button
+                                                        className="h-12 rounded-full border-white/40 bg-white/85 px-7 text-base text-rose-700 hover:bg-white dark:border-slate-700 dark:bg-slate-900/85 dark:text-rose-200 dark:hover:bg-slate-800"
+                                                        size="lg"
+                                                        variant="outline"
+                                                    >
+                                                        Cek pesanan
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="relative">
